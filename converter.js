@@ -14,6 +14,9 @@ const converter = (config) => {
           return columnRebuilder(column);
         });
       }
+      if (card.defaultSort.columnKey) {
+        card.defaultSort.columnKey = stringReplacer(card.defaultSort.columnKey, true);
+      }
       return card;
     });
     return page;
@@ -35,14 +38,31 @@ const columnRebuilder = (column) => {
     newColumn.calc = column.key;
     newColumn.derivation = '';
   }
-
-  newColumn.calc = newColumn.calc.replace('tcoc', 'cost')
-  newColumn.calc = newColumn.calc.replace('edAdmits', 'edVisits')
-  newColumn.calc = newColumn.calc.replace('ipVisits', 'ipStays')
-  newColumn.calc = newColumn.calc.replace('fills', 'scripts')
+  newColumn.calc = stringReplacer(newColumn.calc);
+  // newColumn.calc = newColumn.calc.replace('tcoc', 'cost')
+  // newColumn.calc = newColumn.calc.replace('edAdmits', 'edVisits')
+  // newColumn.calc = newColumn.calc.replace('ipVisits', 'ipStays')
+  // newColumn.calc = newColumn.calc.replace('fills', 'scripts')
+  // newColumn.calc = newColumn.calc.replace('costGroup1', 'costGroup')
   newColumn.label = column.label;
   newColumn.style = column.style;
   return newColumn;
+}
+
+const stringReplacer = (oldString, defaultSort = false) => {
+  console.log(oldString)
+  let newString = oldString;
+
+  if (defaultSort) {
+    newString = newString.replace('Compare', '');
+    newString = newString.replace('PercentDiff', '');
+  }
+  newString = newString.replace('tcoc', 'cost')
+  newString = newString.replace('edAdmits', 'edVisits')
+  newString = newString.replace('ipVisits', 'ipStays')
+  newString = newString.replace('fills', 'scripts')
+  newString = newString.replace('costGroup1', 'costGroup')
+  return newString;
 }
 
 const allPayer = JSON.stringify(converter(All_Payer_ACO_Practice_Scorecard_Testing_20180427));
